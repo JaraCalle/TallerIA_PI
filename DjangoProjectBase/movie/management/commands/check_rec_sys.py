@@ -17,7 +17,7 @@ def cosine_similarity(a, b):
 class Command(BaseCommand):
     help = 'Modify path of images'
 
-    def handle(self, *args, **kwargs):
+    def handle(self, req, *args, **kwargs):
 
         #Se lee del archivo .env la api key de openai
         _ = load_dotenv('../open_ai_api_keys.env')
@@ -28,7 +28,6 @@ class Command(BaseCommand):
         
         items = Movie.objects.all()
 
-        req = "película de peleas callejeras"
         emb_req = get_embedding(req, client)
 
         sim = []
@@ -40,4 +39,4 @@ class Command(BaseCommand):
         print(sim)
         idx = np.argmax(sim)
         idx = int(idx)
-        print(items[idx].title)
+        return items[idx].title

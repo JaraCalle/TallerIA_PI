@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from .models import Movie
+from .management.commands.check_rec_sys import Command
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -17,6 +18,18 @@ def home(request):
     searchTerm = request.GET.get('searchMovie') # GET se usa para solicitar recursos de un servidor
     if searchTerm:
         movies = Movie.objects.filter(title__icontains=searchTerm)
+    else:
+        movies = Movie.objects.all()
+    return render(request, 'home.html', {'searchTerm':searchTerm, 'movies':movies})
+
+def recomendations(request):
+    #return HttpResponse('<h1>Welcome to Home Page</h1>')
+    #return render(request, 'home.html')
+    #return render(request, 'home.html', {'name':'Paola Vallejo'})
+    searchTerm = request.GET.get('searchMovie') # GET se usa para solicitar recursos de un servidor
+    if searchTerm:
+        command = Command()
+        movies = Movie.objects.filter(title__icontains=command.handle(searchTerm))
     else:
         movies = Movie.objects.all()
     return render(request, 'home.html', {'searchTerm':searchTerm, 'movies':movies})
